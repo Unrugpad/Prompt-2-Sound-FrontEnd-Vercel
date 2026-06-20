@@ -359,57 +359,83 @@
   <section id="view-signup" class="view" style="display:none;">
     <div class="auth-wrap">
       <div class="auth-card">
-        <h2>Create your account</h2>
-        <p class="sub">Free to join. You'll get your own referral code right away.</p>
 
-        <form id="signupForm" novalidate>
-          <div class="form-grid">
-            <div class="field full">
-              <label for="username">Username (this becomes your referral code)</label>
-              <input type="text" id="username" placeholder="e.g. chidinma_beats" pattern="[A-Za-z0-9_]{3,20}" required>
-              <span class="hint-text">Letters, numbers, underscores only — no spaces.</span>
-            </div>
-            <div class="field full">
-              <label for="suEmail">Email</label>
-              <input type="email" id="suEmail" placeholder="you@email.com" required>
-            </div>
-            <div class="field full">
-              <label for="suPassword">Password</label>
-              <div class="password-wrap">
-                <input type="password" id="suPassword" placeholder="At least 6 characters" minlength="6" required>
-                <button type="button" class="pw-toggle" data-target="suPassword">Show</button>
+        <div id="signupStep">
+          <h2>Create your account</h2>
+          <p class="sub">Free to join. You'll get your own referral code right away.</p>
+
+          <form id="signupForm" novalidate>
+            <div class="form-grid">
+              <div class="field full">
+                <label for="username">Username (this becomes your referral code)</label>
+                <input type="text" id="username" placeholder="e.g. chidinma_beats" pattern="[A-Za-z0-9_]{3,20}" required>
+                <span class="hint-text">Letters, numbers, underscores only — no spaces.</span>
+              </div>
+              <div class="field full">
+                <label for="suEmail">Email</label>
+                <input type="email" id="suEmail" placeholder="you@email.com" required>
+              </div>
+              <div class="field full">
+                <label for="suPassword">Password</label>
+                <div class="password-wrap">
+                  <input type="password" id="suPassword" placeholder="At least 6 characters" minlength="6" required>
+                  <button type="button" class="pw-toggle" data-target="suPassword">Show</button>
+                </div>
+              </div>
+              <div class="field full">
+                <label for="suPassword2">Confirm password</label>
+                <div class="password-wrap">
+                  <input type="password" id="suPassword2" placeholder="Re-enter your password" minlength="6" required>
+                  <button type="button" class="pw-toggle" data-target="suPassword2">Show</button>
+                </div>
+              </div>
+              <div class="field">
+                <label for="whatsapp">WhatsApp number</label>
+                <input type="tel" id="whatsapp" placeholder="080..." required>
+              </div>
+              <div class="field">
+                <label for="state">State</label>
+                <select id="state" required>
+                  <option value="" disabled selected>Select your state</option>
+                </select>
+              </div>
+              <div class="field full">
+                <label for="refCode">Referral code (compulsory)</label>
+                <input type="text" id="refCode" placeholder="Enter the code of the person who referred you" required>
+                <span class="hint-text" id="refHint">First time setting this up? Use Kaluschuks as your referral code.</span>
               </div>
             </div>
-            <div class="field full">
-              <label for="suPassword2">Confirm password</label>
-              <div class="password-wrap">
-                <input type="password" id="suPassword2" placeholder="Re-enter your password" minlength="6" required>
-                <button type="button" class="pw-toggle" data-target="suPassword2">Show</button>
+
+            <p class="error-text" id="signupError"></p>
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top:.5rem;">Create Account</button>
+            <p class="form-note">We'll send a 6-digit code to your email to confirm it's really you before your account is created.</p>
+          </form>
+
+          <p class="auth-foot">Already have an account? <a href="#login">Log in</a></p>
+        </div>
+
+        <div id="signupOtpStep" style="display:none;">
+          <h2>Verify your email</h2>
+          <p class="sub">We sent a 6-digit code to your email. It expires in 10 minutes.</p>
+
+          <form id="signupOtpForm" novalidate>
+            <div class="form-grid">
+              <div class="field full">
+                <label for="signupOtpCode">6-digit code</label>
+                <input type="text" id="signupOtpCode" placeholder="123456" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required>
               </div>
             </div>
-            <div class="field">
-              <label for="whatsapp">WhatsApp number</label>
-              <input type="tel" id="whatsapp" placeholder="080..." required>
-            </div>
-            <div class="field">
-              <label for="state">State</label>
-              <select id="state" required>
-                <option value="" disabled selected>Select your state</option>
-              </select>
-            </div>
-            <div class="field full">
-              <label for="refCode">Referral code (compulsory)</label>
-              <input type="text" id="refCode" placeholder="Enter the code of the person who referred you" required>
-              <span class="hint-text" id="refHint">First time setting this up? Use Kaluschuks as your referral code.</span>
-            </div>
-          </div>
 
-          <p class="error-text" id="signupError"></p>
-          <button type="submit" class="btn btn-primary btn-block" style="margin-top:.5rem;">Create Account</button>
-          <p class="form-note">After signing up, you'll land on your dashboard with your referral code and the option to pay and join the class.</p>
-        </form>
+            <p class="error-text" id="signupOtpError"></p>
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top:.5rem;">Verify &amp; Create Account</button>
+          </form>
 
-        <p class="auth-foot">Already have an account? <a href="#login">Log in</a></p>
+          <p class="auth-foot">
+            Didn't get it? <a id="resendSignupOtpLink">Resend code</a> ·
+            <a id="editSignupLink">Edit my details</a>
+          </p>
+        </div>
+
       </div>
     </div>
   </section>
@@ -418,59 +444,33 @@
   <section id="view-login" class="view" style="display:none;">
     <div class="auth-wrap">
       <div class="auth-card">
+        <h2>Log in</h2>
+        <p class="sub">See your referral code, your earnings, and pay to join the class.</p>
 
-        <div id="loginStep">
-          <h2>Log in</h2>
-          <p class="sub">See your referral code, your earnings, and pay to join the class.</p>
-
-          <form id="loginForm" novalidate>
-            <div class="form-grid">
-              <div class="field full">
-                <label for="liEmail">Email</label>
-                <input type="email" id="liEmail" placeholder="you@email.com" required>
-              </div>
-              <div class="field full">
-                <label for="liPassword">Password</label>
-                <div class="password-wrap">
-                  <input type="password" id="liPassword" placeholder="Your password" required>
-                  <button type="button" class="pw-toggle" data-target="liPassword">Show</button>
-                </div>
+        <form id="loginForm" novalidate>
+          <div class="form-grid">
+            <div class="field full">
+              <label for="liEmail">Email</label>
+              <input type="email" id="liEmail" placeholder="you@email.com" required>
+            </div>
+            <div class="field full">
+              <label for="liPassword">Password</label>
+              <div class="password-wrap">
+                <input type="password" id="liPassword" placeholder="Your password" required>
+                <button type="button" class="pw-toggle" data-target="liPassword">Show</button>
               </div>
             </div>
+          </div>
 
-            <p style="text-align:right;margin-top:.4rem;">
-              <a href="#forgot" style="color:var(--cyan);font-size:.82rem;">Forgot password?</a>
-            </p>
-
-            <p class="error-text" id="loginError"></p>
-            <button type="submit" class="btn btn-primary btn-block" style="margin-top:.5rem;">Log In</button>
-          </form>
-
-          <p class="auth-foot">New here? <a href="#signup">Create a free account</a></p>
-        </div>
-
-        <div id="otpStep" style="display:none;">
-          <h2>Enter your code</h2>
-          <p class="sub">We sent a 6-digit code to your email. It expires in 10 minutes.</p>
-
-          <form id="otpForm" novalidate>
-            <div class="form-grid">
-              <div class="field full">
-                <label for="otpCode">6-digit code</label>
-                <input type="text" id="otpCode" placeholder="123456" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required>
-              </div>
-            </div>
-
-            <p class="error-text" id="otpError"></p>
-            <button type="submit" class="btn btn-primary btn-block" style="margin-top:.5rem;">Verify Code</button>
-          </form>
-
-          <p class="auth-foot">
-            Didn't get it? <a id="resendOtpLink">Resend code</a> ·
-            <a id="backToLoginLink">Use a different account</a>
+          <p style="text-align:right;margin-top:.4rem;">
+            <a href="#forgot" style="color:var(--cyan);font-size:.82rem;">Forgot password?</a>
           </p>
-        </div>
 
+          <p class="error-text" id="loginError"></p>
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top:.5rem;">Log In</button>
+        </form>
+
+        <p class="auth-foot">New here? <a href="#signup">Create a free account</a></p>
       </div>
     </div>
   </section>
@@ -631,10 +631,10 @@
       document.getElementById('view-' + v).style.display = (v === name) ? 'block' : 'none';
     });
     window.scrollTo(0, 0);
-    if (name === 'signup') prefillReferral();
-    if (name === 'login'){
-      document.getElementById('loginStep').style.display = 'block';
-      document.getElementById('otpStep').style.display = 'none';
+    if (name === 'signup'){
+      document.getElementById('signupStep').style.display = 'block';
+      document.getElementById('signupOtpStep').style.display = 'none';
+      prefillReferral();
     }
     if (name === 'forgot') renderForgotView();
     if (name === 'dashboard') renderDashboard();
@@ -687,6 +687,7 @@
     '</div>' +
     '<div class="dash-grid">' +
       '<div class="stat-card"><div class="num" id="statReferred">0</div><p>People referred</p></div>' +
+      '<div class="stat-card"><div class="num" id="statIndirect">0</div><p>Indirect referrals (your downline\'s)</p></div>' +
       '<div class="stat-card"><div class="num" id="statPending">₦0</div><p>Pending bonus</p></div>' +
       '<div class="stat-card"><div class="num" id="statPaid">₦0</div><p>Paid bonus</p></div>' +
     '</div>' +
@@ -753,6 +754,7 @@
     refLinkInput.value = window.location.origin + window.location.pathname + '?ref=' + user.username;
 
     document.getElementById('statReferred').textContent = user.referral_count;
+    document.getElementById('statIndirect').textContent = user.indirect_referral_count;
     document.getElementById('statPending').textContent = formatNaira(user.pending_bonus);
     document.getElementById('statPaid').textContent = formatNaira(user.paid_bonus);
 
@@ -864,6 +866,8 @@
     await updateNav();
     await route();
 
+    var pendingSignupPayload = null;
+
     document.getElementById('signupForm').addEventListener('submit', async function(e){
       e.preventDefault();
       var errorEl = document.getElementById('signupError');
@@ -876,19 +880,53 @@
 
       var submitBtn = this.querySelector('button[type="submit"]');
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Creating account…';
+      submitBtn.textContent = 'Sending code…';
+
+      var payload = {
+        username: document.getElementById('username').value.trim(),
+        email: document.getElementById('suEmail').value.trim(),
+        password: pw1,
+        whatsapp: document.getElementById('whatsapp').value.trim(),
+        state: document.getElementById('state').value,
+        referral_code: document.getElementById('refCode').value.trim()
+      };
 
       try {
-        var data = await apiFetch('/auth/signup', {
+        await apiFetch('/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        pendingSignupPayload = payload;
+        document.getElementById('signupStep').style.display = 'none';
+        document.getElementById('signupOtpStep').style.display = 'block';
+        document.getElementById('signupOtpCode').value = '';
+        document.getElementById('signupOtpError').textContent = '';
+      } catch(err){
+        errorEl.textContent = err.message;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Account';
+      }
+    });
+
+    document.getElementById('signupOtpForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      var errorEl = document.getElementById('signupOtpError');
+      errorEl.textContent = '';
+      if (!this.checkValidity()){ this.reportValidity(); return; }
+
+      var submitBtn = this.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Verifying…';
+
+      try {
+        var data = await apiFetch('/auth/verify-signup-otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            username: document.getElementById('username').value.trim(),
-            email: document.getElementById('suEmail').value.trim(),
-            password: pw1,
-            whatsapp: document.getElementById('whatsapp').value.trim(),
-            state: document.getElementById('state').value,
-            referral_code: document.getElementById('refCode').value.trim()
+            email: pendingSignupPayload.email,
+            code: document.getElementById('signupOtpCode').value.trim()
           })
         });
         setToken(data.token);
@@ -898,11 +936,31 @@
       } catch(err){
         errorEl.textContent = err.message;
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Create Account';
+        submitBtn.textContent = 'Verify & Create Account';
       }
     });
 
-    var pendingLoginEmail = '';
+    document.getElementById('resendSignupOtpLink').addEventListener('click', async function(){
+      var errorEl = document.getElementById('signupOtpError');
+      errorEl.textContent = '';
+      try {
+        await apiFetch('/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(pendingSignupPayload)
+        });
+        errorEl.className = 'hint-text ok';
+        errorEl.textContent = 'New code sent.';
+      } catch(err){
+        errorEl.className = 'error-text';
+        errorEl.textContent = "Couldn't resend — go back and try signing up again.";
+      }
+    });
+
+    document.getElementById('editSignupLink').addEventListener('click', function(){
+      document.getElementById('signupOtpStep').style.display = 'none';
+      document.getElementById('signupStep').style.display = 'block';
+    });
 
     document.getElementById('loginForm').addEventListener('submit', async function(e){
       e.preventDefault();
@@ -912,45 +970,16 @@
 
       var submitBtn = this.querySelector('button[type="submit"]');
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Checking…';
-
-      var email = document.getElementById('liEmail').value.trim();
-      var password = document.getElementById('liPassword').value;
+      submitBtn.textContent = 'Logging in…';
 
       try {
-        await apiFetch('/auth/login', {
+        var data = await apiFetch('/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email, password: password })
-        });
-        pendingLoginEmail = email;
-        document.getElementById('loginStep').style.display = 'none';
-        document.getElementById('otpStep').style.display = 'block';
-        document.getElementById('otpCode').value = '';
-        document.getElementById('otpError').textContent = '';
-      } catch(err){
-        errorEl.textContent = err.message;
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Log In';
-      }
-    });
-
-    document.getElementById('otpForm').addEventListener('submit', async function(e){
-      e.preventDefault();
-      var errorEl = document.getElementById('otpError');
-      errorEl.textContent = '';
-      if (!this.checkValidity()){ this.reportValidity(); return; }
-
-      var submitBtn = this.querySelector('button[type="submit"]');
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Verifying…';
-
-      try {
-        var data = await apiFetch('/auth/verify-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: pendingLoginEmail, code: document.getElementById('otpCode').value.trim() })
+          body: JSON.stringify({
+            email: document.getElementById('liEmail').value.trim(),
+            password: document.getElementById('liPassword').value
+          })
         });
         setToken(data.token);
         await updateNav();
@@ -959,31 +988,8 @@
       } catch(err){
         errorEl.textContent = err.message;
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Verify Code';
+        submitBtn.textContent = 'Log In';
       }
-    });
-
-    document.getElementById('resendOtpLink').addEventListener('click', async function(){
-      var errorEl = document.getElementById('otpError');
-      errorEl.textContent = '';
-      try {
-        await apiFetch('/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: pendingLoginEmail, password: document.getElementById('liPassword').value })
-        });
-        errorEl.className = 'hint-text ok';
-        errorEl.textContent = 'New code sent.';
-      } catch(err){
-        errorEl.className = 'error-text';
-        errorEl.textContent = "Couldn't resend — go back and log in again.";
-      }
-    });
-
-    document.getElementById('backToLoginLink').addEventListener('click', function(){
-      document.getElementById('otpStep').style.display = 'none';
-      document.getElementById('loginStep').style.display = 'block';
-      document.getElementById('liPassword').value = '';
     });
 
     document.getElementById('forgotRequestForm').addEventListener('submit', async function(e){
