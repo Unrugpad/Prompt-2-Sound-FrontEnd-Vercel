@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Music With AI — Online Class</title>
+<meta name="description" content="Learn AI music generation online — generate lyrics, create full songs with AI, and earn by referring others. ₦10,000 one-time access.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ctext y='18' font-size='20'%3E🎵%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0612;
+    --ink-2:#150B26;
+    --ink-3:#1C1033;
+    --violet:#8A3FFC;
+    --cyan:#2DE3E3;
+    --magenta:#FF3D9A;
+    --paper:#F3EFFA;
+    --muted:#ADA0C9;
+    --line:rgba(243,239,250,0.10);
+    --radius:14px;
+    --maxw:1080px;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'Space Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--font-body);
+    line-height:1.5;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:var(--font-display);font-weight:700;letter-spacing:-0.01em;margin:0;}
+  p{margin:0;}
+  a{color:inherit;text-decoration:none;}
+  .container{max-width:var(--maxw);margin:0 auto;padding:0 1.25rem;}
+  .section{padding:clamp(3rem,8vw,6rem) 0;}
+  .eyebrow{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.14em;
+    font-size:.72rem;color:var(--cyan);display:inline-flex;align-items:center;gap:.5em;margin-bottom:.85rem;}
+  .eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--magenta);display:inline-block;}
+  .center{text-align:center;}
+  .lede{color:var(--muted);font-size:1.02rem;line-height:1.55;}
+
+  /* Waveform / equalizer signature component */
+  .eq{display:flex;align-items:flex-end;gap:3px;height:var(--eq-h,40px);overflow:hidden;}
+  .eq span{flex:1 1 auto;min-width:2px;border-radius:2px 2px 0 0;
+    background:linear-gradient(180deg,var(--cyan),var(--violet));transform-origin:bottom;
+    animation:eqPulse var(--d,1s) ease-in-out infinite;animation-delay:var(--del,0s);}
+  @keyframes eqPulse{0%,100%{transform:scaleY(.15)}50%{transform:scaleY(1)}}
+  .eq-divider{--eq-h:30px;opacity:.45;max-width:var(--maxw);margin:0 auto;padding:0 1.25rem;}
+  .mini-eq{--eq-h:18px;width:34px;margin-bottom:.9rem;}
+
+  /* Nav */
+  .nav{position:sticky;top:0;z-index:50;background:rgba(10,6,18,.75);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;max-width:var(--maxw);
+    margin:0 auto;padding:.9rem 1.25rem;gap:.75rem;}
+  .brand{font-size:1rem;font-weight:700;letter-spacing:.01em;}
+  .brand .accent{color:var(--cyan);}
+  .nav-actions{display:flex;gap:.6rem;align-items:center;}
+  .nav .btn{padding:.6rem 1.1rem;font-size:.85rem;}
+
+  /* Buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;
+    font-family:var(--font-display);font-weight:600;font-size:.95rem;padding:.85rem 1.7rem;
+    border-radius:999px;border:none;cursor:pointer;
+    transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,color .15s ease;}
+  .btn-primary{background:linear-gradient(135deg,var(--violet),var(--magenta));color:#fff;
+    box-shadow:0 10px 26px -10px rgba(138,63,252,.65);}
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+  .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--paper);}
+  .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);}
+  .btn-block{width:100%;}
+  .btn:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{
+    outline:2px solid var(--cyan);outline-offset:2px;}
+
+  /* Hero */
+  .hero{position:relative;padding-top:clamp(3rem,10vw,5.5rem);padding-bottom:1.5rem;overflow:hidden;}
+  .hero-content{position:relative;display:flex;flex-direction:column;align-items:center;
+    text-align:center;gap:1.1rem;}
+  .hero h1{font-size:clamp(2.1rem,6vw,3.5rem);line-height:1.06;max-width:19ch;}
+  .hero h1 .grad{background:linear-gradient(135deg,var(--cyan),var(--violet));
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero .lede{max-width:48ch;font-size:1.05rem;}
+  .hero-actions{display:flex;gap:.85rem;flex-wrap:wrap;justify-content:center;margin-top:.4rem;}
+  .hero-eq{width:min(560px,100%);margin-top:2.25rem;--eq-h:48px;}
+  .hero-eq-caption{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);margin-top:.6rem;}
+
+  /* Learn grid */
+  .learn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:2.25rem;}
+  .learn-card{background:var(--ink-2);border:1px solid var(--line);border-radius:var(--radius);padding:1.35rem;}
+  .learn-card h3{font-size:1.02rem;margin-bottom:.4rem;}
+  .learn-card p{color:var(--muted);font-size:.88rem;line-height:1.45;}
+
+  /* Bonus */
+  .bonus-card{border:1px solid rgba(255,61,154,.4);
+    background:linear-gradient(160deg,rgba(255,61,154,.10),rgba(138,63,252,.06));
+    border-radius:18px;padding:2.25rem 1.5rem;text-align:center;margin-top:2.5rem;}
+  .bonus-card .eyebrow{color:var(--magenta);}
+  .bonus-card .eyebrow::before{background:var(--cyan);}
+  .bonus-card h2{font-size:1.45rem;margin-bottom:.65rem;}
+  .bonus-card p{color:var(--muted);max-width:48ch;margin:0 auto;}
+
+  /* Refer & earn */
+  .refer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:2.25rem;}
+  .stat-card{background:var(--ink-2);border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem;}
+  .stat-card .num{font-size:2.3rem;background:linear-gradient(135deg,var(--cyan),var(--magenta));
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat-card p{color:var(--muted);margin-top:.35rem;font-size:.92rem;}
+  .steps{margin-top:2.25rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;}
+  .step{display:flex;gap:.85rem;align-items:flex-start;}
+  .step .n{font-family:var(--font-mono);font-size:.8rem;color:var(--cyan);border:1px solid var(--line);
+    border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .step p{color:var(--muted);font-size:.9rem;}
+  .refer-note{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);text-align:center;margin-top:2rem;}
+  .refer-note .accent{color:#FFD36E;}
+
+  /* Pricing teaser */
+  .price-card{margin-top:2.25rem;background:var(--ink-2);border:1px solid var(--line);border-radius:18px;
+    padding:2rem;display:flex;flex-direction:column;gap:1.4rem;}
+  .price-tag{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;}
+  .price-tag .amount{font-size:2.5rem;}
+  .price-tag .sub{color:var(--muted);font-size:.92rem;}
+  .pay-note{color:var(--muted);font-size:.86rem;}
+
+  /* Payment details (dashboard, behind login) */
+  .pay-details{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1.1rem;
+    background:var(--ink-3);border-radius:12px;padding:1.15rem 1.3rem;}
+  .pay-details .label{display:block;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:.25rem;}
+  .pay-details .value-row{display:flex;align-items:center;gap:.5rem;}
+  .pay-details .value{font-family:var(--font-mono);font-size:1rem;}
+  .copy-btn{font-family:var(--font-mono);font-size:.66rem;border:1px solid var(--line);background:transparent;
+    color:var(--cyan);padding:.3rem .55rem;border-radius:8px;cursor:pointer;}
+  .copy-btn:hover{border-color:var(--cyan);}
+
+  /* Forms */
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;}
+  .field{display:flex;flex-direction:column;gap:.4rem;}
+  .field.full{grid-column:1/-1;}
+  label{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+  input,select{background:var(--ink-3);border:1px solid var(--line);border-radius:10px;padding:.78rem .9rem;
+    color:var(--paper);font-family:var(--font-body);font-size:.95rem;width:100%;}
+  input::placeholder{color:rgba(173,160,201,.55);}
+  select{appearance:none;}
+  input[readonly]{color:var(--cyan);}
+  .file-field{border:1px dashed var(--line);border-radius:10px;padding:1rem;background:var(--ink-3);}
+  .file-field input{border:none;background:transparent;padding:0;font-size:.85rem;}
+  .hint-text{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);min-height:1em;}
+  .hint-text.ok{color:var(--cyan);}
+  .error-text{color:var(--magenta);font-size:.82rem;min-height:1.1em;}
+  .form-note{color:var(--muted);font-size:.82rem;margin-top:.85rem;}
+
+  /* Auth views */
+  .auth-wrap{min-height:78vh;display:flex;align-items:center;justify-content:center;padding:2.5rem 1.25rem;}
+  .auth-card{width:100%;max-width:440px;background:var(--ink-2);border:1px solid var(--line);
+    border-radius:18px;padding:2.25rem;}
+  .auth-card h2{font-size:1.4rem;text-align:center;}
+  .auth-card .sub{color:var(--muted);font-size:.88rem;text-align:center;margin:.5rem 0 1.75rem;}
+  .auth-foot{text-align:center;margin-top:1.4rem;font-size:.85rem;color:var(--muted);}
+  .auth-foot a{color:var(--cyan);cursor:pointer;}
+
+  /* Dashboard */
+  .topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;}
+  .topbar .who{font-family:var(--font-mono);font-size:.82rem;color:var(--muted);}
+  .topbar .who strong{color:var(--paper);}
+  .dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1.75rem;}
+  .ref-card{background:var(--ink-2);border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem;margin-top:1.75rem;}
+  .ref-card .code{font-family:var(--font-mono);font-size:1.3rem;letter-spacing:.04em;color:var(--cyan);}
+  .ref-link-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.65rem;}
+  .ref-link-row input{flex:1;min-width:180px;}
+  .pill{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-mono);font-size:.7rem;
+    letter-spacing:.08em;text-transform:uppercase;padding:.4rem .85rem;border-radius:999px;}
+  .pill.muted{color:var(--muted);background:rgba(173,160,201,.08);border:1px solid var(--line);}
+  .pill.pending{color:#FFD36E;background:rgba(255,211,110,.1);border:1px solid rgba(255,211,110,.3);}
+  .pill.approved{color:var(--cyan);background:rgba(45,227,227,.1);border:1px solid rgba(45,227,227,.3);}
+  .enroll-card{background:var(--ink-2);border:1px solid var(--line);border-radius:var(--radius);padding:1.75rem;margin-top:1.25rem;}
+  .enroll-card h3{font-size:1.1rem;margin-bottom:.5rem;}
+  .enroll-card p{color:var(--muted);font-size:.9rem;}
+  .confirm{text-align:center;}
+  .confirm .check{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--violet));
+    display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.4rem;color:#fff;}
+  .loading-note{color:var(--muted);font-size:.85rem;text-align:center;padding:2rem 0;}
+
+  /* Footer */
+  .footer{border-top:1px solid var(--line);padding:2.25rem 0;text-align:center;color:var(--muted);font-size:.82rem;}
+  .footer .brand{display:block;margin-bottom:.4rem;color:var(--paper);}
+
+  @media (max-width:560px){
+    .hero-actions{flex-direction:column;width:100%;}
+    .hero-actions .btn{width:100%;}
+    .nav-actions .btn{padding:.55rem .9rem;font-size:.8rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .eq span{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#landing" class="brand">CREATE MUSIC <span class="accent">WITH AI</span></a>
+      <div class="nav-actions" id="navLoggedOut">
+        <a href="#login" class="btn btn-ghost">Log In</a>
+        <a href="#signup" class="btn btn-primary">Sign Up</a>
+      </div>
+      <div class="nav-actions" id="navLoggedIn" style="display:none;">
+        <a href="#dashboard" class="btn btn-ghost">Dashboard</a>
+        <button type="button" class="btn btn-primary" id="logoutBtn">Log Out</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============== LANDING ============== -->
+  <section id="view-landing" class="view">
+
+    <section class="hero">
+      <div class="container hero-content">
+        <span class="eyebrow">100% Online · Beginner Friendly</span>
+        <h1>Learn AI Music Generation <span class="grad">From Scratch</span></h1>
+        <p class="lede">Generate lyrics, build full songs with AI tools, and turn your sound into income — no studio, no instruments, no experience required.</p>
+        <div class="hero-actions">
+          <a href="#signup" class="btn btn-primary">Create Free Account</a>
+          <a href="#learn-anchor" class="btn btn-ghost">See What You'll Learn</a>
+        </div>
+        <div class="eq hero-eq" data-bars="56" aria-hidden="true"></div>
+        <span class="hero-eq-caption">AI-generated · in your voice</span>
+      </div>
+    </section>
+
+    <div class="eq eq-divider" data-bars="64" aria-hidden="true"></div>
+
+    <section class="section" id="learn-anchor">
+      <div class="container">
+        <div class="center">
+          <span class="eyebrow">Curriculum</span>
+          <h2>Everything you need to make a finished song</h2>
+        </div>
+        <div class="learn-grid">
+          <div class="learn-card">
+            <div class="eq mini-eq" data-bars="5" aria-hidden="true"></div>
+            <h3>Generate lyrics with AI</h3>
+            <p>Write full sets of lyrics in any style or language, from a single idea or theme.</p>
+          </div>
+          <div class="learn-card">
+            <div class="eq mini-eq" data-bars="5" aria-hidden="true"></div>
+            <h3>AI vocals, in your own voice</h3>
+            <p>Generate AI vocals, then layer in your own vocal texture so every track sounds like you.</p>
+          </div>
+          <div class="learn-card">
+            <div class="eq mini-eq" data-bars="5" aria-hidden="true"></div>
+            <h3>Control genre and mood</h3>
+            <p>Direct the AI toward the exact genre, energy, and mood your song needs.</p>
+          </div>
+          <div class="learn-card">
+            <div class="eq mini-eq" data-bars="5" aria-hidden="true"></div>
+            <h3>Structure professional music</h3>
+            <p>Arrange verses, hooks, and drops the way real producers structure a track.</p>
+          </div>
+          <div class="learn-card">
+            <div class="eq mini-eq" data-bars="5" aria-hidden="true"></div>
+            <h3>Generate a full song</h3>
+            <p>Go from a single prompt to a complete, finished song — start to end.</p>
+          </div>
+          <div class="learn-card">
+            <div class="eq mini-eq" data-bars="5" aria-hidden="true"></div>
+            <h3>Monetize your music</h3>
+            <p>Distribute what you make and turn your AI-made tracks into real income.</p>
+          </div>
+        </div>
+
+        <div class="bonus-card">
+          <span class="eyebrow">Bonus</span>
+          <h2>AI Avatar Marketing Videos</h2>
+          <p>Turn any photo into a professional spokesperson video in minutes — promote your music or business without ever stepping in front of a camera.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="eq eq-divider" data-bars="64" aria-hidden="true"></div>
+
+    <section class="section">
+      <div class="container">
+        <div class="center">
+          <span class="eyebrow">Refer &amp; Earn</span>
+          <h2>Get paid for every person you bring in</h2>
+          <p class="lede" style="margin-top:.75rem;max-width:46ch;margin-inline:auto;">Every account gets its own referral code. Here's what you earn from it.</p>
+        </div>
+
+        <div class="refer-grid">
+          <div class="stat-card">
+            <div class="num">40%</div>
+            <p>Direct referral bonus — paid when someone you personally refer gets approved.</p>
+          </div>
+          <div class="stat-card">
+            <div class="num">10%</div>
+            <p>Upline bonus — paid automatically when your downline refers someone new.</p>
+          </div>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <span class="n">1</span>
+            <p>Sign up free and get your own referral code — your username.</p>
+          </div>
+          <div class="step">
+            <span class="n">2</span>
+            <p>Share it. Anyone who joins using your code becomes your downline.</p>
+          </div>
+          <div class="step">
+            <span class="n">3</span>
+            <p>Once their payment is approved, you earn 40% and your upline earns 10% — shown as pending on your dashboard.</p>
+          </div>
+        </div>
+
+        <p class="refer-note">Pending bonuses are paid out every Saturday once your balance reaches <span class="accent">₦5,000</span> or more.</p>
+      </div>
+    </section>
+
+    <div class="eq eq-divider" data-bars="64" aria-hidden="true"></div>
+
+    <section class="section">
+      <div class="container">
+        <div class="center">
+          <span class="eyebrow">Join The Class</span>
+          <h2>One-time access. Online class.</h2>
+        </div>
+
+        <div class="price-card">
+          <div class="price-tag">
+            <span class="amount">₦10,000</span>
+            <span class="sub">one-time payment · online class</span>
+          </div>
+          <p class="pay-note">Sign up for a free account first — you'll get your own referral code, and payment details unlock once you log in.</p>
+          <a href="#signup" class="btn btn-primary btn-block">Sign Up Free</a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span class="brand">Create Music <span style="color:var(--cyan)">With AI</span></span>
+      <p>Payments are manually verified, usually within 24 hours.</p>
+    </footer>
+  </section>
+
+  <!-- ============== SIGN UP ============== -->
+  <section id="view-signup" class="view" style="display:none;">
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <h2>Create your account</h2>
+        <p class="sub">Free to join. You'll get your own referral code right away.</p>
+
+        <form id="signupForm" novalidate>
+          <div class="form-grid">
+            <div class="field full">
+              <label for="username">Username (this becomes your referral code)</label>
+              <input type="text" id="username" placeholder="e.g. chidinma_beats" pattern="[A-Za-z0-9_]{3,20}" required>
+              <span class="hint-text">Letters, numbers, underscores only — no spaces.</span>
+            </div>
+            <div class="field full">
+              <label for="suEmail">Email</label>
+              <input type="email" id="suEmail" placeholder="you@email.com" required>
+            </div>
+            <div class="field full">
+              <label for="suPassword">Password</label>
+              <input type="password" id="suPassword" placeholder="At least 6 characters" minlength="6" required>
+            </div>
+            <div class="field">
+              <label for="whatsapp">WhatsApp number</label>
+              <input type="tel" id="whatsapp" placeholder="080..." required>
+            </div>
+            <div class="field">
+              <label for="state">State</label>
+              <select id="state" required>
+                <option value="" disabled selected>Select your state</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="refCode">Referral code (compulsory)</label>
+              <input type="text" id="refCode" placeholder="Enter the code of the person who referred you" required>
+              <span class="hint-text" id="refHint">First time setting this up? Use Kaluschuks as your referral code.</span>
+            </div>
+          </div>
+
+          <p class="error-text" id="signupError"></p>
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top:.5rem;">Create Account</button>
+          <p class="form-note">After signing up, you'll land on your dashboard with your referral code and the option to pay and join the class.</p>
+        </form>
+
+        <p class="auth-foot">Already have an account? <a href="#login">Log in</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== LOG IN ============== -->
+  <section id="view-login" class="view" style="display:none;">
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <h2>Log in</h2>
+        <p class="sub">See your referral code, your earnings, and pay to join the class.</p>
+
+        <form id="loginForm" novalidate>
+          <div class="form-grid">
+            <div class="field full">
+              <label for="liEmail">Email</label>
+              <input type="email" id="liEmail" placeholder="you@email.com" required>
+            </div>
+            <div class="field full">
+              <label for="liPassword">Password</label>
+              <input type="password" id="liPassword" placeholder="Your password" required>
+            </div>
+          </div>
+
+          <p style="text-align:right;margin-top:.4rem;">
+            <a href="#forgot" style="color:var(--cyan);font-size:.82rem;">Forgot password?</a>
+          </p>
+
+          <p class="error-text" id="loginError"></p>
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top:.5rem;">Log In</button>
+        </form>
+
+        <p class="auth-foot">New here? <a href="#signup">Create a free account</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== FORGOT PASSWORD ============== -->
+  <section id="view-forgot" class="view" style="display:none;">
+    <div class="auth-wrap">
+      <div class="auth-card">
+
+        <div id="forgotRequest">
+          <h2>Reset your password</h2>
+          <p class="sub">Enter your account email — we'll send you a reset link.</p>
+          <form id="forgotRequestForm" novalidate>
+            <div class="form-grid">
+              <div class="field full">
+                <label for="fpEmail">Email</label>
+                <input type="email" id="fpEmail" placeholder="you@email.com" required>
+              </div>
+            </div>
+            <p class="error-text" id="forgotRequestError"></p>
+            <p class="hint-text ok" id="forgotRequestSuccess"></p>
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top:.5rem;">Send Reset Link</button>
+          </form>
+        </div>
+
+        <div id="forgotConfirm" style="display:none;">
+          <h2>Choose a new password</h2>
+          <p class="sub">Enter and confirm your new password.</p>
+          <form id="forgotConfirmForm" novalidate>
+            <div class="form-grid">
+              <div class="field full">
+                <label for="fpPassword">New password</label>
+                <input type="password" id="fpPassword" placeholder="At least 6 characters" minlength="6" required>
+              </div>
+              <div class="field full">
+                <label for="fpPassword2">Confirm new password</label>
+                <input type="password" id="fpPassword2" placeholder="Re-enter new password" minlength="6" required>
+              </div>
+            </div>
+            <p class="error-text" id="forgotConfirmError"></p>
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top:.5rem;">Reset Password</button>
+          </form>
+        </div>
+
+        <p class="auth-foot">Remembered it? <a href="#login">Back to log in</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== DASHBOARD ============== -->
+  <section id="view-dashboard" class="view" style="display:none;">
+    <div class="section" style="padding-top:2.5rem;">
+      <div class="container" id="dashboardContent">
+        <p class="loading-note">Loading your dashboard…</p>
+      </div>
+    </div>
+  </section>
+
+<script>
+  /* ============================================================
+     Backend connection
+     ------------------------------------------------------------
+     Replace API_BASE with your real Railway URL once it's deployed,
+     e.g. https://createmusicwithai-production.up.railway.app
+     ============================================================ */
+  var API_BASE = 'https://YOUR-RAILWAY-URL.up.railway.app';
+  var TOKEN_KEY = 'cmwa_token';
+
+  function getToken(){ return localStorage.getItem(TOKEN_KEY); }
+  function setToken(t){ localStorage.setItem(TOKEN_KEY, t); }
+  function clearToken(){ localStorage.removeItem(TOKEN_KEY); }
+
+  async function apiFetch(path, options){
+    options = options || {};
+    options.headers = options.headers || {};
+    var token = getToken();
+    if (token) options.headers['Authorization'] = 'Bearer ' + token;
+    var res = await fetch(API_BASE + path, options);
+    if (!res.ok){
+      var err = await res.json().catch(function(){ return {}; });
+      throw new Error(err.detail || 'Something went wrong.');
+    }
+    return res.json();
+  }
+
+  async function fetchCurrentUser(){
+    if (!getToken()) return null;
+    try { return await apiFetch('/me'); }
+    catch(e){ clearToken(); return null; }
+  }
+
+  function formatNaira(amount){
+    return '₦' + Number(amount || 0).toLocaleString('en-NG');
+  }
+
+  /* ---------- Waveform / equalizer ---------- */
+  function buildEq(el){
+    var count = parseInt(el.dataset.bars || '32', 10);
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.innerHTML = '';
+    for (var i = 0; i < count; i++){
+      var s = document.createElement('span');
+      var dur = (0.7 + Math.random() * 0.9).toFixed(2);
+      var del = (-(Math.random() * 1.2)).toFixed(2);
+      var h = (0.25 + Math.random() * 0.75).toFixed(2);
+      s.style.setProperty('--d', dur + 's');
+      s.style.setProperty('--del', del + 's');
+      if (reduced){ s.style.animation = 'none'; s.style.transform = 'scaleY(' + h + ')'; }
+      el.appendChild(s);
+    }
+  }
+
+  /* ---------- Nigerian states ---------- */
+  var NG_STATES = ["Abia","Adamawa","Akwa Ibom","Anambra","Bauchi","Bayelsa","Benue","Borno",
+    "Cross River","Delta","Ebonyi","Edo","Ekiti","Enugu","Gombe","Imo","Jigawa","Kaduna",
+    "Kano","Katsina","Kebbi","Kogi","Kwara","Lagos","Nasarawa","Niger","Ogun","Ondo","Osun",
+    "Oyo","Plateau","Rivers","Sokoto","Taraba","Yobe","Zamfara","FCT - Abuja"];
+
+  /* ---------- Admin WhatsApp ---------- */
+  var ADMIN_WHATSAPP = '2347038780152';
+  function buildWaLink(name){
+    var msg = 'Hi, I just submitted my payment for the AI Music class. My name is ' + name + '. Please confirm my registration.';
+    return 'https://wa.me/' + ADMIN_WHATSAPP + '?text=' + encodeURIComponent(msg);
+  }
+
+  function wireCopyButton(btnEl, textEl){
+    if (!btnEl || !textEl) return;
+    btnEl.addEventListener('click', function(){
+      var value = textEl.value !== undefined ? textEl.value : textEl.textContent;
+      navigator.clipboard.writeText(value).then(function(){
+        var original = btnEl.textContent;
+        btnEl.textContent = 'Copied!';
+        setTimeout(function(){ btnEl.textContent = original; }, 1500);
+      });
+    });
+  }
+
+  /* ---------- Router (one page, several views) ---------- */
+  var VIEWS = ['landing', 'signup', 'login', 'forgot', 'dashboard'];
+
+  async function route(){
+    var hash = window.location.hash.replace('#', '') || 'landing';
+    if (VIEWS.indexOf(hash) === -1) hash = 'landing';
+    if (hash === 'dashboard'){
+      var user = await fetchCurrentUser();
+      if (!user) hash = 'login';
+    }
+    showView(hash);
+  }
+  function showView(name){
+    VIEWS.forEach(function(v){
+      document.getElementById('view-' + v).style.display = (v === name) ? 'block' : 'none';
+    });
+    window.scrollTo(0, 0);
+    if (name === 'signup') prefillReferral();
+    if (name === 'forgot') renderForgotView();
+    if (name === 'dashboard') renderDashboard();
+  }
+  async function updateNav(){
+    var loggedIn = !!(await fetchCurrentUser());
+    document.getElementById('navLoggedOut').style.display = loggedIn ? 'none' : 'flex';
+    document.getElementById('navLoggedIn').style.display = loggedIn ? 'flex' : 'none';
+  }
+  function prefillReferral(){
+    var params = new URLSearchParams(window.location.search);
+    var refInput = document.getElementById('refCode');
+    var refHint = document.getElementById('refHint');
+    if (params.get('ref')){
+      refInput.value = params.get('ref');
+      refInput.setAttribute('readonly', 'true');
+      refHint.textContent = 'Referral code applied ✓';
+      refHint.classList.add('ok');
+    }
+  }
+  function renderForgotView(){
+    var params = new URLSearchParams(window.location.search);
+    var token = params.get('token');
+    document.getElementById('forgotRequest').style.display = token ? 'none' : 'block';
+    document.getElementById('forgotConfirm').style.display = token ? 'block' : 'none';
+  }
+
+  /* ---------- Dashboard ---------- */
+  var DASHBOARD_HTML =
+    '<div class="topbar">' +
+      '<span class="who">Welcome back, <strong id="whoName">—</strong></span>' +
+      '<span class="pill muted" id="enrollPill">—</span>' +
+    '</div>' +
+    '<div class="ref-card">' +
+      '<span class="eyebrow">Your Referral Code</span>' +
+      '<div class="code" id="refCodeDisplay">—</div>' +
+      '<div class="ref-link-row">' +
+        '<input type="text" id="refLinkInput" readonly>' +
+        '<button type="button" class="copy-btn" id="copyLinkBtn">Copy Link</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="dash-grid">' +
+      '<div class="stat-card"><div class="num" id="statReferred">0</div><p>People referred</p></div>' +
+      '<div class="stat-card"><div class="num" id="statPending">₦0</div><p>Pending bonus</p></div>' +
+      '<div class="stat-card"><div class="num" id="statPaid">₦0</div><p>Paid bonus</p></div>' +
+    '</div>' +
+    '<div id="enrollNotEnrolled" class="enroll-card" style="display:none;">' +
+      '<span class="eyebrow">Join The Class</span>' +
+      '<h3>₦10,000 — one-time access</h3>' +
+      '<p>Pay to the account below, then submit your payment screenshot. Your admin will confirm it shortly after.</p>' +
+      '<div class="pay-details" style="margin-top:1.25rem;">' +
+        '<div><span class="label">Bank</span><span class="value">Opay</span></div>' +
+        '<div><span class="label">Account Number</span><div class="value-row">' +
+          '<span class="value" id="acctNum">7038780152</span>' +
+          '<button type="button" class="copy-btn" id="copyAcctBtn">Copy</button>' +
+        '</div></div>' +
+        '<div><span class="label">Account Name</span><span class="value">Godswill Kalu</span></div>' +
+      '</div>' +
+      '<form id="proofForm" style="margin-top:1.5rem;">' +
+        '<div class="field full"><label for="proof">Payment screenshot</label>' +
+          '<div class="file-field"><input type="file" id="proof" accept="image/*" capture="environment" required></div>' +
+        '</div>' +
+        '<p class="error-text" id="proofError"></p>' +
+        '<button type="submit" class="btn btn-primary btn-block" style="margin-top:1rem;">I\'ve Paid — Submit Screenshot</button>' +
+      '</form>' +
+    '</div>' +
+    '<div id="enrollPending" class="enroll-card confirm" style="display:none;">' +
+      '<div class="check">✓</div>' +
+      '<h3>Payment submitted</h3>' +
+      '<span class="pill pending" style="margin-bottom:1rem;display:inline-flex;">● Status: Pending Review</span>' +
+      '<p>Your admin will confirm your payment shortly. To speed things up, chat the admin on WhatsApp and share your screenshot there too.</p>' +
+      '<div style="margin-top:1.5rem;"><a href="#" id="waLink" target="_blank" rel="noopener" class="btn btn-primary">Chat Admin on WhatsApp</a></div>' +
+    '</div>' +
+    '<div id="enrollApproved" class="enroll-card confirm" style="display:none;">' +
+      '<div class="check">✓</div>' +
+      '<h3>You\'re enrolled</h3>' +
+      '<span class="pill approved" style="margin-bottom:1rem;display:inline-flex;">● Status: Approved</span>' +
+      '<p>Welcome to the class. Keep sharing your referral code — you\'ll keep earning 40% on direct referrals and 10% on your downline\'s.</p>' +
+    '</div>';
+
+  async function renderDashboard(){
+    var user = await fetchCurrentUser();
+    if (!user){ window.location.hash = 'login'; return; }
+
+    var container = document.getElementById('dashboardContent');
+    container.innerHTML = DASHBOARD_HTML;
+
+    document.getElementById('whoName').textContent = user.username;
+    document.getElementById('refCodeDisplay').textContent = user.username;
+
+    var refLinkInput = document.getElementById('refLinkInput');
+    refLinkInput.value = window.location.origin + window.location.pathname + '?ref=' + user.username;
+
+    document.getElementById('statReferred').textContent = user.referral_count;
+    document.getElementById('statPending').textContent = formatNaira(user.pending_bonus);
+    document.getElementById('statPaid').textContent = formatNaira(user.paid_bonus);
+
+    var pill = document.getElementById('enrollPill');
+    var panels = {
+      not_enrolled: document.getElementById('enrollNotEnrolled'),
+      pending: document.getElementById('enrollPending'),
+      approved: document.getElementById('enrollApproved')
+    };
+    Object.keys(panels).forEach(function(key){ panels[key].style.display = 'none'; });
+    panels[user.enrollment].style.display = 'block';
+
+    if (user.enrollment === 'not_enrolled'){
+      pill.textContent = '● Not Enrolled'; pill.className = 'pill muted';
+    } else if (user.enrollment === 'pending'){
+      pill.textContent = '● Pending Review'; pill.className = 'pill pending';
+      document.getElementById('waLink').href = buildWaLink(user.username);
+    } else {
+      pill.textContent = '● Approved'; pill.className = 'pill approved';
+    }
+
+    wireCopyButton(document.getElementById('copyLinkBtn'), refLinkInput);
+    wireCopyButton(document.getElementById('copyAcctBtn'), document.getElementById('acctNum'));
+
+    var proofForm = document.getElementById('proofForm');
+    if (proofForm){
+      proofForm.addEventListener('submit', async function(e){
+        e.preventDefault();
+        var errorEl = document.getElementById('proofError');
+        errorEl.textContent = '';
+        var fileInput = document.getElementById('proof');
+        if (!fileInput.files.length){ fileInput.reportValidity(); return; }
+
+        var submitBtn = proofForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting…';
+
+        try {
+          var formData = new FormData();
+          formData.append('proof', fileInput.files[0]);
+          var res = await fetch(API_BASE + '/payment/submit', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + getToken() },
+            body: formData
+          });
+          if (!res.ok){
+            var err = await res.json().catch(function(){ return {}; });
+            throw new Error(err.detail || 'Something went wrong.');
+          }
+          await renderDashboard();
+        } catch(err){
+          errorEl.textContent = err.message;
+          submitBtn.disabled = false;
+          submitBtn.textContent = "I've Paid — Submit Screenshot";
+        }
+      });
+    }
+  }
+
+  /* ---------- Bind everything once ---------- */
+  document.addEventListener('DOMContentLoaded', async function(){
+    document.querySelectorAll('.eq').forEach(buildEq);
+
+    var stateSelect = document.getElementById('state');
+    NG_STATES.forEach(function(s){
+      var opt = document.createElement('option');
+      opt.value = s; opt.textContent = s;
+      stateSelect.appendChild(opt);
+    });
+
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('ref') && !window.location.hash) window.location.hash = 'signup';
+    if (params.get('token') && !window.location.hash) window.location.hash = 'forgot';
+
+    await updateNav();
+    await route();
+
+    document.getElementById('signupForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      var errorEl = document.getElementById('signupError');
+      errorEl.textContent = '';
+      if (!this.checkValidity()){ this.reportValidity(); return; }
+
+      try {
+        var data = await apiFetch('/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: document.getElementById('username').value.trim(),
+            email: document.getElementById('suEmail').value.trim(),
+            password: document.getElementById('suPassword').value,
+            whatsapp: document.getElementById('whatsapp').value.trim(),
+            state: document.getElementById('state').value,
+            referral_code: document.getElementById('refCode').value.trim()
+          })
+        });
+        setToken(data.token);
+        await updateNav();
+        window.location.hash = 'dashboard';
+        route();
+      } catch(err){
+        errorEl.textContent = err.message;
+      }
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      var errorEl = document.getElementById('loginError');
+      errorEl.textContent = '';
+      if (!this.checkValidity()){ this.reportValidity(); return; }
+
+      try {
+        var data = await apiFetch('/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('liEmail').value.trim(),
+            password: document.getElementById('liPassword').value
+          })
+        });
+        setToken(data.token);
+        await updateNav();
+        window.location.hash = 'dashboard';
+        route();
+      } catch(err){
+        errorEl.textContent = err.message;
+      }
+    });
+
+    document.getElementById('forgotRequestForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      var errorEl = document.getElementById('forgotRequestError');
+      var successEl = document.getElementById('forgotRequestSuccess');
+      errorEl.textContent = ''; successEl.textContent = '';
+      if (!this.checkValidity()){ this.reportValidity(); return; }
+
+      try {
+        var data = await apiFetch('/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: document.getElementById('fpEmail').value.trim() })
+        });
+        successEl.textContent = data.message;
+      } catch(err){
+        errorEl.textContent = err.message;
+      }
+    });
+
+    document.getElementById('forgotConfirmForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      var errorEl = document.getElementById('forgotConfirmError');
+      errorEl.textContent = '';
+      if (!this.checkValidity()){ this.reportValidity(); return; }
+
+      var pw1 = document.getElementById('fpPassword').value;
+      var pw2 = document.getElementById('fpPassword2').value;
+      if (pw1 !== pw2){ errorEl.textContent = 'Passwords do not match.'; return; }
+
+      var params = new URLSearchParams(window.location.search);
+      var token = params.get('token');
+
+      try {
+        await apiFetch('/auth/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: token, new_password: pw1 })
+        });
+        window.location.href = window.location.pathname + '#login';
+      } catch(err){
+        errorEl.textContent = err.message;
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async function(){
+      clearToken();
+      await updateNav();
+      window.location.hash = 'landing';
+      route();
+    });
+  });
+
+  window.addEventListener('hashchange', async function(){
+    await updateNav();
+    await route();
+  });
+</script>
+
+</body>
+</html>
